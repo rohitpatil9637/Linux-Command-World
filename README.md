@@ -93,6 +93,7 @@ If you found this helpful, give it a **star** ⭐ and share it with fellow Linux
 ---
 
 <p align="center">
+  <b>Author: ROHIT PATIL</b>
   <b>Made for the Linux community</b><br>
   <sub>200+ commands · 12 sections · Interview-ready · RHCSA/LFCS aligned</sub>
 </p>
