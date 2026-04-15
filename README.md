@@ -33,7 +33,7 @@
 ### Option 1: Direct download
 ```bash
 # Clone or download the file
-git clone https://github.com/YOUR_USERNAME/linux-commands-reference.git
+git clone https://github.com/rohitpatil9637/Linux-Command-World.git
 
 # Open in your browser
 open linux-guide.html        # macOS
