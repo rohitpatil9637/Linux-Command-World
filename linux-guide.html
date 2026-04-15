@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Linux — Interview Commands </title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #8b949e;
+      --dim: #484f58;
+      --green: #3fb950;
+      --blue: #58a6ff;
+      --amber: #d29922;
+      --red: #f85149;
+      --purple: #bc8cff;
+      --teal: #39d353;
+      --cyan: #56d364;
+      --accent: #238636;
+      --accent2: #1f6feb;
+    }
+
+    html {
+      scroll-behavior: smooth
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 15px;
+      line-height: 1.6;
+      min-height: 100vh
+    }
+
+    /* HEADER */
+    .hero {
+      background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #0d1117 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2330363d' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")
+    }
+
+    .hero-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 600;
+      color: var(--green);
+      text-shadow: 0 0 40px rgba(63, 185, 80, 0.3);
+      position: relative
+    }
+
+    .hero-title span {
+      color: var(--blue)
+    }
+
+    .hero-sub {
+      color: var(--muted);
+      margin-top: .75rem;
+      font-size: 1rem;
+      font-weight: 300;
+      position: relative
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      margin-top: 1.25rem;
+      background: rgba(63, 185, 80, 0.1);
+      border: 1px solid rgba(63, 185, 80, 0.3);
+      color: var(--green);
+      padding: .4rem 1rem;
+      border-radius: 2rem;
+      font-size: .8rem;
+      font-family: 'JetBrains Mono', monospace;
+      position: relative
+    }
+
+    /* SEARCH */
+    .search-wrap {
+      padding: 1.5rem 2rem 1rem;
+      max-width: 900px;
+      margin: 0 auto
+    }
+
+    .search-box {
+      position: relative
+    }
+
+    .search-box input {
+      width: 100%;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: .85rem 1rem .85rem 3rem;
+      color: var(--text);
+      font-size: .95rem;
+      font-family: 'JetBrains Mono', monospace;
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .search-box input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.12)
+    }
+
+    .search-box input::placeholder {
+      color: var(--dim)
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 1rem
+    }
+
+    .search-count {
+      text-align: center;
+      color: var(--muted);
+      font-size: .8rem;
+      margin-top: .5rem;
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    /* NAV */
+    .nav-tabs {
+      display: flex;
+      gap: .4rem;
+      padding: 0 2rem 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      justify-content: center
+    }
+
+    .tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: .45rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: .78rem;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all .2s;
+      white-space: nowrap
+    }
+
+    .tab-btn:hover,
+    .tab-btn.active {
+      background: var(--accent2);
+      border-color: var(--blue);
+      color: var(--text)
+    }
+
+    .tab-btn .tab-count {
+      opacity: .6;
+      font-size: .7rem;
+      margin-left: .3rem
+    }
+
+    /* MAIN */
+    .main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 2rem 4rem;
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 1.5rem
+    }
+
+    @media(max-width:900px) {
+      .main {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      position: sticky;
+      top: 1rem;
+      height: fit-content;
+      max-height: 90vh;
+      overflow-y: auto
+    }
+
+    .sidebar::-webkit-scrollbar {
+      width: 4px
+    }
+
+    .sidebar::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    .sidebar::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px
+    }
+
+    .sidebar-section {
+      margin-bottom: .25rem
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      padding: .55rem .85rem;
+      border-radius: 8px;
+      cursor: pointer;
+      color: var(--muted);
+      font-size: .82rem;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all .18s;
+      border: 1px solid transparent;
+      text-decoration: none
+    }
+
+    .sidebar-item:hover {
+      background: var(--surface2);
+      color: var(--text);
+      border-color: var(--border)
+    }
+
+    .sidebar-item.active {
+      background: rgba(88, 166, 255, 0.1);
+      color: var(--blue);
+      border-color: rgba(88, 166, 255, 0.2)
+    }
+
+    .sidebar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    /* SECTIONS */
+    .sections {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem
+    }
+
+    .section-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      scroll-margin-top: 1rem
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2)
+    }
+
+    .section-icon {
+      font-size: 1.4rem;
+      line-height: 1
+    }
+
+    .section-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--text)
+    }
+
+    .section-desc {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-top: .15rem
+    }
+
+    .section-badge {
+      margin-left: auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: .2rem .6rem;
+      border-radius: 6px;
+      font-size: .7rem;
+      font-family: 'JetBrains Mono', monospace;
+      white-space: nowrap
+    }
+
+    /* COMMAND CARDS */
+    .cmd-grid {
+      display: grid;
+      gap: 0
+    }
+
+    .cmd-card {
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      transition: background .15s;
+      position: relative
+    }
+
+    .cmd-card:last-child {
+      border-bottom: none
+    }
+
+    .cmd-card:hover {
+      background: var(--surface2)
+    }
+
+    .cmd-card.hidden {
+      display: none
+    }
+
+    .cmd-top {
+      display: flex;
+      align-items: flex-start;
+      gap: .75rem;
+      flex-wrap: wrap
+    }
+
+    .cmd-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .82rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .35rem .75rem;
+      color: var(--green);
+      flex-shrink: 0;
+      position: relative;
+      cursor: pointer;
+      transition: all .15s;
+      max-width: 100%;
+      word-break: break-all
+    }
+
+    .cmd-code:hover {
+      border-color: var(--green);
+      box-shadow: 0 0 0 2px rgba(63, 185, 80, 0.12)
+    }
+
+    .cmd-code.copied {
+      border-color: var(--blue);
+      color: var(--blue)
+    }
+
+    .cmd-desc {
+      color: var(--text);
+      font-size: .88rem;
+      flex: 1;
+      min-width: 180px
+    }
+
+    .cmd-example {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      color: var(--amber);
+      background: rgba(210, 153, 34, 0.07);
+      border: 1px solid rgba(210, 153, 34, 0.15);
+      border-radius: 6px;
+      padding: .4rem .8rem;
+      margin-top: .6rem;
+      word-break: break-all
+    }
+
+    .cmd-example-label {
+      font-size: .68rem;
+      color: var(--dim);
+      font-family: 'Space Grotesk', sans-serif;
+      margin-top: .5rem;
+      margin-bottom: .2rem;
+      text-transform: uppercase;
+      letter-spacing: .06em
+    }
+
+    .cmd-tip {
+      display: flex;
+      gap: .5rem;
+      align-items: flex-start;
+      background: rgba(88, 166, 255, 0.06);
+      border: 1px solid rgba(88, 166, 255, 0.15);
+      border-radius: 6px;
+      padding: .5rem .8rem;
+      margin-top: .6rem;
+      font-size: .8rem;
+      color: var(--blue)
+    }
+
+    .cmd-tip-icon {
+      flex-shrink: 0;
+      opacity: .7
+    }
+
+    .copy-hint {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .6rem;
+      color: var(--dim);
+      font-family: 'Space Grotesk', sans-serif;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity .2s
+    }
+
+    .cmd-code:hover .copy-hint {
+      opacity: 1
+    }
+
+    .tags {
+      display: flex;
+      gap: .35rem;
+      margin-top: .6rem;
+      flex-wrap: wrap
+    }
+
+    .tag {
+      font-size: .65rem;
+      padding: .15rem .5rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border)
+    }
+
+    /* INTERVIEW FLAG */
+    .interview-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      background: rgba(188, 140, 255, 0.08);
+      border: 1px solid rgba(188, 140, 255, 0.2);
+      color: var(--purple);
+      font-size: .65rem;
+      padding: .15rem .55rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      margin-left: .5rem;
+      vertical-align: middle;
+      flex-shrink: 0
+    }
+
+    /* EMPTY STATE */
+    .empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--muted)
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: .4
+    }
+
+    /* QUICK REF */
+    .quick-ref {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem
+    }
+
+    .quick-ref h3 {
+      font-size: .95rem;
+      color: var(--text);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem
+    }
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: .5rem
+    }
+
+    .quick-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .6rem .85rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .75rem
+    }
+
+    .quick-key {
+      color: var(--green)
+    }
+
+    .quick-val {
+      color: var(--muted);
+      font-size: .7rem;
+      margin-top: .15rem
+    }
+
+    /* TOP BAR STATS */
+    .stats-bar {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      padding: .75rem 2rem;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      flex-wrap: wrap
+    }
+
+    .stat {
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      font-size: .78rem;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace
+    }
+
+    .stat-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="hero">
+    <div class="hero-title">Linux Commands</div>
+    <div class="hero-sub">Complete command reference · Real-world examples · Interview tips · RHCSA/LFCS ready</div>
+    <div style="display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin-top:1.25rem;position:relative">
+      <div class="hero-badge"
+        style="background:rgba(88,166,255,0.1);border-color:rgba(88,166,255,0.3);color:var(--blue)">&#9654; 12 Sections
+      </div>
+      <div class="hero-badge">&#9654; 200+ Commands</div>
+      <div class="hero-badge"
+        style="background:rgba(188,140,255,0.1);border-color:rgba(188,140,255,0.3);color:var(--purple)">&#9654;
+        Interview Flagged</div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-dot" style="background:var(--green)"></div>Click any command to copy
+    </div>
+    <div class="stat">
+      <div class="stat-dot" style="background:var(--blue)"></div>Blue boxes = interview hot topics
+    </div>
+    <div class="stat">
+      <div class="stat-dot" style="background:var(--amber)"></div>Orange = real-world examples
+    </div>
+    <div class="stat">
+      <div class="stat-dot" style="background:var(--purple)"></div>Purple badge = high-frequency exam
+    </div>
+  </div>
+
+  <div class="search-wrap">
+    <div class="search-box">
+      <span class="search-icon">&#128269;</span>
+      <input type="text" id="searchInput" placeholder="Search commands, flags, concepts... (e.g. grep, chmod, SELinux)"
+        autocomplete="off">
+    </div>
+    <div class="search-count" id="searchCount"></div>
+  </div>
+
+  <div class="nav-tabs" id="navTabs"></div>
+
+  <div class="main">
+    <aside class="sidebar" id="sidebar"></aside>
+    <div class="sections" id="sections"></div>
+  </div>
+
+  <script>
+    const data = [
+      {
+        id: "essential", icon: "&#128187;", color: "#3fb950",
+        title: "Essential Tools & Shell",
+        desc: "Shell basics, I/O redirection, grep, SSH, documentation",
+        cmds: [
+          {
+            cmd: "cmd --help  |  man cmd  |  info cmd", desc: "Get help for any command. man is most comprehensive, info has hyperlinks, --help is fastest.",
+            ex: "man ls  |  info coreutils  |  ls --help  |  apropos partition",
+            tip: "Always know where to find docs. man sections: 1=user, 5=config files, 8=admin. Try 'man 5 passwd' vs 'man passwd'", interview: true, tags: ["docs", "help"]
+          },
+          {
+            cmd: "ls -lah  |  ls -ltr  |  ls -Z", desc: "List files: -l=long, -a=hidden, -h=human sizes, -t=time sorted, -r=reverse, -Z=SELinux context",
+            ex: "ls -lah /etc/  |  ls -lt /var/log/ | head -10",
+            tip: "-Z flag shows SELinux context — critical for SELinux troubleshooting questions", interview: true, tags: ["files", "basics"]
+          },
+          {
+            cmd: "echo $VAR  |  env  |  printenv PATH", desc: "Print variables, environment. export makes variable available to child processes.",
+            ex: "export MYVAR=hello  |  echo $PATH  |  env | grep HOME", tags: ["variables", "shell"]
+          },
+          {
+            cmd: "> file  |  >> file  |  2> err  |  2>&1  |  &>all", desc: "Redirection: > overwrite, >> append, 2> stderr only, 2>&1 merge stderr to stdout, &> both to file",
+            ex: "ls /nonexistent 2>/dev/null  |  find / -name '*.conf' 2>/dev/null > results.txt  |  command &> all.log",
+            tip: "2>/dev/null suppresses errors — huge in scripting. 2>&1 pipes both streams together", interview: true, tags: ["redirection", "io"]
+          },
+          {
+            cmd: "cmd1 | cmd2  |  tee file  |  xargs", desc: "Pipe output between commands. tee splits to file+stdout simultaneously. xargs builds command from stdin",
+            ex: "ps aux | grep nginx | awk '{print $2}'  |  ls *.log | xargs rm  |  find . -name '*.txt' | xargs grep 'error'",
+            tip: "Pipe chaining is the Linux superpower. Combine grep, awk, sort, uniq, wc for powerful one-liners", interview: true, tags: ["pipe", "redirection"]
+          },
+          {
+            cmd: "grep 'pattern' file  |  grep -rni 'text' /dir/", desc: "Search text. -r=recursive, -n=line numbers, -i=case-insensitive, -v=invert, -l=files only, -c=count",
+            ex: "grep -rni 'error' /var/log/  |  grep '^root' /etc/passwd  |  grep -v '^#' /etc/ssh/sshd_config",
+            tip: "Know regex: ^ start, $ end, . any char, * zero+, + one+, [] char class, \\d digit", interview: true, tags: ["grep", "regex", "search"]
+          },
+          {
+            cmd: "grep -E 'pat1|pat2'  |  egrep  |  fgrep 'literal'", desc: "Extended grep for complex patterns. fgrep for literal (no regex) searches — fastest for plain text",
+            ex: "grep -E '^(root|admin)' /etc/passwd  |  grep -E 'failed|error|warn' /var/log/messages", tags: ["grep", "regex"]
+          },
+          {
+            cmd: "ssh user@host  |  ssh -p 2222 user@host  |  ssh -i key.pem user@host", desc: "Connect to remote systems. -p custom port, -i identity file, -X X11 forwarding, -L local tunnel",
+            ex: "ssh -i ~/.ssh/mykey.pem ec2-user@1.2.3.4  |  ssh -L 8080:localhost:80 user@server",
+            tip: "Know ~/.ssh/config for aliases. ssh-keygen, ssh-copy-id, authorized_keys file location", interview: true, tags: ["ssh", "remote"]
+          },
+          {
+            cmd: "ssh-keygen -t ed25519 -C 'comment'  |  ssh-copy-id user@host", desc: "Generate SSH keypair and copy public key to remote host for passwordless login",
+            ex: "ssh-keygen -t ed25519 -f ~/.ssh/mykey  |  ssh-copy-id -i ~/.ssh/mykey.pub user@192.168.1.10",
+            tip: "ed25519 is preferred over rsa now. Public key goes to ~/.ssh/authorized_keys on remote", interview: true, tags: ["ssh", "security", "keys"]
+          },
+          {
+            cmd: "su - user  |  sudo cmd  |  sudo -i  |  su -", desc: "Switch user. su - loads full environment. sudo runs as root. sudo -i starts root shell. su - = su -l root",
+            ex: "su - dbadmin  |  sudo systemctl restart nginx  |  sudo -u www-data whoami",
+            tip: "su - vs su: always use su - to get full login environment (PATH, HOME, etc)", interview: true, tags: ["users", "sudo", "switch"]
+          },
+          {
+            cmd: "who  |  w  |  last  |  lastlog  |  id", desc: "Who is logged in, recent logins, current user info",
+            ex: "who -a  |  last | head -20  |  id  |  id username  |  lastlog | grep -v Never", tags: ["users", "info"]
+          },
+          {
+            cmd: "awk '{print $1,$3}' file  |  awk -F: '{print $1}' /etc/passwd", desc: "Text processing powerhouse. -F sets field separator. $0=whole line, NR=line number, NF=field count",
+            ex: "awk -F: '$3>=1000{print $1}' /etc/passwd  |  df -h | awk 'NR>1{print $5,$6}'  |  awk '{sum+=$1}END{print sum}'",
+            tip: "awk is essential for field extraction. Know it for parsing /etc/passwd, log files in interviews", interview: true, tags: ["awk", "text", "processing"]
+          },
+          {
+            cmd: "sed 's/old/new/g' file  |  sed -i 's/foo/bar/g' file  |  sed -n '5,10p'", desc: "Stream editor. s=substitute, g=global, -i=in-place edit, -n=suppress, p=print",
+            ex: "sed -i 's/SELINUX=permissive/SELINUX=enforcing/g' /etc/selinux/config  |  sed '/^#/d' file",
+            tip: "-i is destructive — always backup first (-i.bak). sed is the go-to for config file edits in scripts", interview: true, tags: ["sed", "text", "edit"]
+          },
+          {
+            cmd: "sort file  |  sort -k2 -n  |  sort -u  |  uniq -c  |  wc -l", desc: "Sort lines, unique values, count. -k field, -n numeric, -r reverse, -u unique. wc: -l lines -w words -c bytes",
+            ex: "sort -t: -k3 -n /etc/passwd | tail  |  cat access.log | awk '{print $1}' | sort | uniq -c | sort -rn | head",
+            tip: "sort | uniq -c | sort -rn is the classic 'top N' pattern — memorize it for log analysis questions", interview: true, tags: ["sort", "text", "analysis"]
+          },
+          {
+            cmd: "cut -d: -f1,3 /etc/passwd  |  tr 'a-z' 'A-Z'  |  tr -d '\\n'", desc: "Cut fields, translate characters. cut -d delimiter -f fields. tr translates or deletes chars",
+            ex: "cut -d: -f1 /etc/passwd | sort  |  echo 'hello' | tr a-z A-Z  |  cat file | tr -d ' '", tags: ["cut", "tr", "text"]
+          },
+          {
+            cmd: "find /dir -name '*.log' -mtime -7 -size +1M", desc: "Find files by name, time, size, permissions. -mtime -7 = modified last 7 days. -exec runs command",
+            ex: "find / -perm -4000 -type f 2>/dev/null  |  find /tmp -mtime +30 -delete  |  find . -name '*.conf' -exec grep -l 'error' {} \\;",
+            tip: "find -perm -4000 finds SUID files — security interview classic. -exec vs xargs: xargs is faster for many files", interview: true, tags: ["find", "files", "search"]
+          },
+          {
+            cmd: "locate filename  |  updatedb  |  which cmd  |  whereis cmd  |  type cmd", desc: "Find command/file locations. locate uses db (fast). updatedb refreshes it. which shows executable path",
+            ex: "which python3  |  whereis nginx  |  type ls  |  locate sshd_config", tags: ["find", "location"]
+          },
+        ]
+      },
+      {
+        id: "files", icon: "&#128193;", color: "#56d364",
+        title: "File & Directory Management",
+        desc: "Create, delete, copy, move, archive, compress files and directories",
+        cmds: [
+          {
+            cmd: "mkdir -p /path/to/dir  |  mkdir -m 755 dirname", desc: "Create directories. -p creates parent directories as needed. -m sets permissions at creation",
+            ex: "mkdir -p /var/app/{logs,data,config}  |  mkdir -m 700 ~/.secrets", tags: ["mkdir", "directories"]
+          },
+          {
+            cmd: "cp -av src dst  |  cp -r dir/ dst/  |  cp -p file dst", desc: "Copy files/dirs. -a=archive (preserve all), -v=verbose, -r=recursive, -p=preserve timestamps/perms",
+            ex: "cp -av /etc/nginx /etc/nginx.bak  |  cp -rp /var/www/html /mnt/backup/", tags: ["cp", "copy"]
+          },
+          {
+            cmd: "mv file dst  |  mv -i file dst  |  rename 's/old/new/' files", desc: "Move or rename. -i=interactive (ask before overwrite). rename uses Perl regex for batch renames",
+            ex: "mv server.conf server.conf.bak  |  rename 's/.txt/.bak/' *.txt", tags: ["mv", "rename"]
+          },
+          {
+            cmd: "rm -rf dir/  |  rm -i file  |  rmdir emptydir", desc: "Delete files/dirs. -r=recursive, -f=force (no prompt). DANGEROUS — double-check before using",
+            ex: "rm -rf /tmp/oldfiles/  |  find /var/log -name '*.gz' -mtime +90 -delete",
+            tip: "Never run rm -rf / even with --no-preserve-root. Interviews test your awareness of dangerous commands", interview: true, tags: ["rm", "delete"]
+          },
+          {
+            cmd: "tar -czf archive.tar.gz dir/  |  tar -xzf archive.tar.gz  |  tar -tvf archive.tar.gz", desc: "Archive+compress. -c=create, -x=extract, -t=list, -z=gzip, -j=bzip2, -J=xz, -v=verbose, -f=file",
+            ex: "tar -czf backup-$(date +%F).tar.gz /etc/  |  tar -xJf archive.tar.xz -C /tmp/  |  tar -tvf archive.tar.gz | grep passwd",
+            tip: "Most tested archive command in interviews. Remember: -c create, -x extract, -t list. -z gzip .tar.gz, -j bzip2 .tar.bz2", interview: true, tags: ["tar", "archive", "compress"]
+          },
+          {
+            cmd: "gzip file  |  gunzip file.gz  |  gzip -k file  |  zcat file.gz", desc: "Gzip compress/decompress. -k keeps original. -d decompress. -l list info. zcat reads without extracting",
+            ex: "gzip -9 largefile.log  |  zcat /var/log/messages-20240101.gz | grep error", tags: ["gzip", "compress"]
+          },
+          {
+            cmd: "bzip2 file  |  bunzip2 file.bz2  |  xz file  |  unxz file.xz", desc: "Better compression (bzip2/xz). xz gives best compression ratio but slower",
+            ex: "bzip2 -k bigfile  |  xz -T4 hugefile  (use 4 threads)", tags: ["bzip2", "xz", "compress"]
+          },
+          {
+            cmd: "ln -s target linkname  |  ln target hardlink", desc: "Soft link (symlink) vs hard link. Symlinks can cross filesystems/point to dirs. Hard links share inode",
+            ex: "ln -s /opt/nginx-1.24/nginx /usr/local/bin/nginx  |  ln /etc/passwd /tmp/passwd-hardlink",
+            tip: "Key difference: soft link breaks if target moves; hard link persists. Hard links can't cross filesystems or link to dirs", interview: true, tags: ["links", "symlink", "hardlink"]
+          },
+          {
+            cmd: "readlink -f /path/to/link  |  ls -la | grep '->'", desc: "Resolve symlink target. -f follows all symlinks to absolute path",
+            ex: "readlink -f /etc/alternatives/java  |  find /etc -type l -ls", tags: ["links", "symlink"]
+          },
+          {
+            cmd: "touch file  |  touch -t 202401011200 file  |  touch -r reffile newfile", desc: "Create empty file or update timestamps. -t set specific time. -r copy timestamp from another file",
+            ex: "touch .gitkeep  |  touch -t 202312251200 christmas.txt", tags: ["touch", "timestamp"]
+          },
+          {
+            cmd: "cat file  |  less file  |  head -n 20 file  |  tail -f /var/log/syslog", desc: "View file contents. tail -f follows log in real time (essential for monitoring)",
+            ex: "tail -f /var/log/nginx/access.log  |  head -1 /etc/passwd  |  cat -n file | head -50",
+            tip: "tail -f is the #1 real-time log monitoring tool. Combine with grep: tail -f log | grep error", interview: true, tags: ["view", "cat", "tail", "head"]
+          },
+          {
+            cmd: "diff file1 file2  |  diff -u f1 f2  |  vimdiff f1 f2", desc: "Compare files. -u unified format (like git diff). vimdiff opens side-by-side in vim",
+            ex: "diff -u /etc/hosts.bak /etc/hosts  |  diff -r dir1/ dir2/", tags: ["diff", "compare"]
+          },
+          {
+            cmd: "stat file  |  file /bin/bash  |  du -sh dir/  |  df -h", desc: "File metadata, type, disk usage. stat shows inode, perms, times. du=disk usage, df=disk free",
+            ex: "stat /etc/passwd  |  file /bin/ls  |  du -sh /var/log/*  |  df -hT",
+            tip: "df -hT shows filesystem type — needed for storage questions. du -sh /* finds space hogs", interview: true, tags: ["stat", "disk", "du", "df"]
+          },
+        ]
+      },
+      {
+        id: "permissions", icon: "&#128274;", color: "#d29922",
+        title: "Permissions, Links & ACLs",
+        desc: "ugo/rwx permissions, special bits, ACLs, ownership",
+        cmds: [
+          {
+            cmd: "chmod 755 file  |  chmod u+x,g-w file  |  chmod -R 644 dir/", desc: "Change file permissions. Octal: 4=r, 2=w, 1=x. Symbolic: u=user, g=group, o=other, a=all",
+            ex: "chmod 600 ~/.ssh/id_rsa  |  chmod -R 755 /var/www/html/  |  chmod u+s /usr/bin/passwd",
+            tip: "SSH key permissions matter: private key must be 600, authorized_keys 600, .ssh dir 700 — this comes up constantly", interview: true, tags: ["chmod", "permissions"]
+          },
+          {
+            cmd: "chown user:group file  |  chown -R apache:apache /var/www  |  chgrp group file", desc: "Change owner and group. -R recursive. chgrp changes group only",
+            ex: "chown -R nginx:nginx /etc/nginx/  |  chown root:wheel /etc/sudoers", tags: ["chown", "ownership"]
+          },
+          {
+            cmd: "umask  |  umask 022  |  umask 027", desc: "Default permission mask for new files. umask 022: files get 644, dirs get 755. umask 027: files 640, dirs 750",
+            ex: "umask  # view current  |  umask 027  # set stricter  |  echo 'umask 022' >> /etc/profile",
+            tip: "umask is subtracted from 666 (files) or 777 (dirs). 666-022=644. Common exam: 'what umask gives 750 dirs?' → 027", interview: true, tags: ["umask", "permissions", "defaults"]
+          },
+          {
+            cmd: "chmod 4755 file  |  chmod u+s file  |  chmod g+s dir  |  chmod +t /tmp", desc: "Special bits: SUID(4)=run as owner, SGID(2)=run as group/inherit group, Sticky(1)=only owner deletes",
+            ex: "ls -la /usr/bin/passwd  # s in user exec = SUID  |  chmod g+s /shared/project/  |  chmod 1777 /tmp",
+            tip: "SUID on passwd lets regular users change passwords. SGID on dirs makes new files inherit group — critical for collaboration setups", interview: true, tags: ["suid", "sgid", "sticky", "special"]
+          },
+          {
+            cmd: "getfacl file  |  setfacl -m u:user:rwx file  |  setfacl -x u:user file", desc: "Extended ACLs for fine-grained permissions beyond ugo. -m modify, -x remove, -b remove all ACLs",
+            ex: "setfacl -m u:alice:rx /var/data  |  setfacl -m g:devs:rw report.txt  |  getfacl /etc/nginx/nginx.conf",
+            tip: "ACLs show as '+' in ls -l. setfacl -m u:user:--- explicitly denies. Default ACLs inherit to new files in dir", interview: true, tags: ["acl", "permissions"]
+          },
+          {
+            cmd: "setfacl -m d:u:user:rwx dir/  |  setfacl -R -m u:user:rx dir/", desc: "Default ACLs (d:) apply to new files in directory. -R sets recursively on existing files",
+            ex: "setfacl -m d:g:developers:rwx /project/  # future files inherit", tags: ["acl", "default"]
+          },
+          {
+            cmd: "lsattr file  |  chattr +i file  |  chattr -i file  |  chattr +a logfile", desc: "Immutable attributes. +i=immutable (even root can't delete). +a=append-only (great for logs)",
+            ex: "chattr +i /etc/resolv.conf  # prevent overwrites  |  lsattr /etc/*.conf", tags: ["chattr", "attributes", "immutable"]
+          },
+        ]
+      },
+      {
+        id: "packages", icon: "&#128230;", color: "#58a6ff",
+        title: "Package Management",
+        desc: "DNF/YUM, RPM, Flatpak repositories and packages",
+        cmds: [
+          {
+            cmd: "dnf install pkg  |  dnf remove pkg  |  dnf update  |  dnf upgrade", desc: "DNF is the modern package manager (replaces yum). install/remove packages, update all or specific",
+            ex: "dnf install -y httpd nginx  |  dnf remove -y telnet  |  dnf update kernel  |  dnf upgrade --refresh",
+            tip: "dnf vs yum: dnf is faster, handles deps better. Both accept same basic syntax in RHEL exams", interview: true, tags: ["dnf", "yum", "packages"]
+          },
+          {
+            cmd: "dnf search pkg  |  dnf info pkg  |  dnf list installed  |  dnf list available", desc: "Search and query packages. list shows installed/available. info shows details",
+            ex: "dnf search web server  |  dnf info httpd  |  dnf list installed | grep python  |  dnf provides /bin/netstat",
+            tip: "dnf provides is crucial: find what package gives you a specific file/command", interview: true, tags: ["dnf", "query", "search"]
+          },
+          {
+            cmd: "dnf repolist  |  dnf repolist all  |  dnf config-manager --enable repo", desc: "List and manage repositories. Repos configured in /etc/yum.repos.d/*.repo",
+            ex: "dnf repolist  |  dnf config-manager --add-repo https://rpm.example.com/repo.repo  |  dnf config-manager --enable epel", tags: ["repos", "dnf", "repository"]
+          },
+          {
+            cmd: "dnf groupinstall 'Development Tools'  |  dnf grouplist  |  dnf groupinfo 'Server'", desc: "Install package groups (collections of related packages)",
+            ex: "dnf groupinstall 'Development Tools'  |  dnf grouplist | grep -i server", tags: ["dnf", "groups"]
+          },
+          {
+            cmd: "rpm -qa  |  rpm -qi pkg  |  rpm -ql pkg  |  rpm -qf /path/to/file", desc: "RPM low-level queries. -q=query, -a=all, -i=info, -l=list files, -f=which package owns file",
+            ex: "rpm -qa | wc -l  |  rpm -ql httpd  |  rpm -qf /etc/httpd/conf/httpd.conf  |  rpm -qi kernel",
+            tip: "rpm -qf /path is the 'which package owns this file?' tool — exam and real-world essential", interview: true, tags: ["rpm", "query"]
+          },
+          {
+            cmd: "rpm -ivh package.rpm  |  rpm -Uvh package.rpm  |  rpm -e package  |  rpm --import GPG-KEY", desc: "Install/upgrade/erase RPMs directly. -i=install, -U=upgrade, -v=verbose, -h=progress bars",
+            ex: "rpm -ivh ./custom-app-1.0.rpm  |  rpm --import https://repo.example.com/RPM-GPG-KEY  |  rpm -e --nodeps package",
+            tip: "--nodeps bypasses dependency checks — risky but useful when you know what you're doing", interview: true, tags: ["rpm", "install"]
+          },
+          {
+            cmd: "rpm -V package  |  rpm -Va 2>/dev/null | grep -v '^........'", desc: "Verify RPM package files integrity. Checks size, MD5, permissions. S=size, M=mode, 5=MD5",
+            ex: "rpm -V openssh-server  |  rpm -Va | grep config",
+            tip: "rpm -V output: each character = a check. '.' means OK, '?' means can't check. Used in security audits", interview: true, tags: ["rpm", "verify", "security"]
+          },
+          {
+            cmd: "flatpak install flathub app.id  |  flatpak remove app.id  |  flatpak run app.id", desc: "Flatpak universal app packaging. Apps run sandboxed. Repos called remotes",
+            ex: "flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo\nflatpak install flathub org.gimp.GIMP", tags: ["flatpak", "packages"]
+          },
+          {
+            cmd: "flatpak remotes  |  flatpak list  |  flatpak search app  |  flatpak update", desc: "Manage flatpak remotes (repos) and installed apps",
+            ex: "flatpak remotes  |  flatpak list --app  |  flatpak update org.gimp.GIMP", tags: ["flatpak", "repos"]
+          },
+        ]
+      },
+      {
+        id: "scripting", icon: "&#128196;", color: "#bc8cff",
+        title: "Shell Scripting",
+        desc: "Conditionals, loops, functions, input/output, script patterns",
+        cmds: [
+          {
+            cmd: "#!/bin/bash  |  chmod +x script.sh  |  bash -x script.sh  |  bash -n script.sh", desc: "Shebang line, make executable, debug (-x traces each cmd), check syntax without running (-n)",
+            ex: "bash -x myscript.sh 2>&1 | tee debug.log  |  bash -n script.sh && echo 'Syntax OK'",
+            tip: "bash -x is the #1 debugging tool. -n syntax check before deployment. Always use #!/bin/bash not #!/bin/sh for portability", interview: true, tags: ["scripting", "bash", "debug"]
+          },
+          {
+            cmd: "if [ condition ]; then ... elif ...; else ...; fi", desc: "Conditionals. [ ] is test command. [[ ]] is bash extended test (safer, supports &&, ||, =~)",
+            ex: "if [ -f /etc/passwd ]; then echo 'exists'; fi\nif [[ $USER == 'root' ]]; then echo 'root'; fi\nif [ $# -eq 0 ]; then echo 'No args'; exit 1; fi",
+            tip: "[ -f ] file exists, [ -d ] dir, [ -z ] empty string, [ -n ] non-empty, [ $a -eq $b ] numeric equal, [ $a == $b ] string equal", interview: true, tags: ["if", "conditionals", "test"]
+          },
+          {
+            cmd: "[ -f file ]  |  [ -d dir ]  |  [ -r file ]  |  [ -x file ]  |  [ -s file ]", desc: "File tests: -f=regular file, -d=directory, -r=readable, -w=writable, -x=executable, -s=non-empty, -L=symlink",
+            ex: "[ -x /usr/bin/python3 ] && python3 script.py  |  [ -s /tmp/lockfile ] || run_process",
+            tip: "[ -s ] tests if file exists AND is non-empty — useful for lockfiles and log checks", tags: ["test", "files", "conditionals"]
+          },
+          {
+            cmd: "for i in $(seq 1 10); do echo $i; done  |  for f in *.txt; do ...; done", desc: "For loops over sequences, files, command output. C-style: for ((i=0;i<10;i++))",
+            ex: "for host in web1 web2 web3; do ssh $host 'uptime'; done\nfor f in /var/log/*.log; do wc -l \"$f\"; done\nfor i in {1..5}; do echo $i; done",
+            tip: "Always quote variables in loops: \"$f\" not $f — prevents word splitting on filenames with spaces", interview: true, tags: ["for", "loops", "scripting"]
+          },
+          {
+            cmd: "while [ condition ]; do ...; done  |  until [ condition ]; do ...; done", desc: "While loops. until is opposite (loops while false). while read processes file line-by-line",
+            ex: "while read line; do echo \"$line\"; done < file.txt\nwhile ! ping -c1 host &>/dev/null; do sleep 5; done; echo 'Up!'", tags: ["while", "loops", "scripting"]
+          },
+          {
+            cmd: "$1 $2 $@ $# $0 $? $$", desc: "Script special variables: $1-$9=positional args, $@=all args, $#=arg count, $0=script name, $?=exit code, $$=PID",
+            ex: "echo \"Script: $0, Args: $#, First: $1\"\n[ $# -lt 2 ] && { echo 'Usage: $0 src dst'; exit 1; }\nls /tmp && echo \"Exit: $?\"",
+            tip: "Always check $? after important commands. exit code 0=success, non-zero=failure. $? is wiped by the next command", interview: true, tags: ["variables", "args", "scripting"]
+          },
+          {
+            cmd: "result=$(command)  |  result=`command`  |  echo $((2 + 3))  |  let x=5+3", desc: "Command substitution captures output. $() preferred over backticks. $(()) for arithmetic",
+            ex: "files=$(ls /etc/*.conf | wc -l)\necho \"Config files: $files\"\nsize=$(($(df / | tail -1 | awk '{print $3}') / 1024))", tags: ["substitution", "arithmetic", "scripting"]
+          },
+          {
+            cmd: "function myfunc() { ...; }  |  myfunc() { local var=val; ...; return 0; }", desc: "Functions. local limits variable scope. return sets exit code (0-255). Functions must be defined before call",
+            ex: "check_root() {\n  [ $(id -u) -eq 0 ] || { echo 'Run as root'; exit 1; }\n}\ncheck_root\ninstall_package() { dnf install -y \"$1\" && return 0 || return 1; }", tags: ["functions", "scripting"]
+          },
+          {
+            cmd: "case $var in pattern) cmds;; *) default;; esac", desc: "Case statement — cleaner than chained if/elif for multiple values",
+            ex: "case $1 in\n  start) systemctl start nginx;;\n  stop)  systemctl stop nginx;;\n  *)     echo \"Usage: $0 start|stop\"; exit 1;;\nesac", tags: ["case", "scripting", "conditionals"]
+          },
+          {
+            cmd: "set -e  |  set -u  |  set -o pipefail  |  set -euo pipefail", desc: "Strict mode: -e exit on error, -u error on unset vars, -o pipefail catch pipe failures",
+            ex: "#!/bin/bash\nset -euo pipefail\ntrap 'echo Error on line $LINENO' ERR",
+            tip: "set -euo pipefail at top of every production script. Prevents silent failures that are hard to debug", interview: true, tags: ["bash", "scripting", "best-practice"]
+          },
+          {
+            cmd: "trap 'cleanup' EXIT  |  trap 'handler' SIGINT SIGTERM", desc: "Trap signals and exit for cleanup. EXIT runs no matter how script ends",
+            ex: "TMPDIR=$(mktemp -d)\ntrap 'rm -rf $TMPDIR' EXIT  # always clean up\ntrap 'echo Interrupted; exit 1' INT TERM", tags: ["trap", "signals", "scripting"]
+          },
+        ]
+      },
+      {
+        id: "processes", icon: "&#9881;&#65039;", color: "#f85149",
+        title: "Running Systems & Processes",
+        desc: "Boot, processes, scheduling, journals, services, system targets",
+        cmds: [
+          {
+            cmd: "systemctl start|stop|restart|status|enable|disable service", desc: "Control systemd services. enable/disable sets boot-time behavior. is-active, is-enabled for checks",
+            ex: "systemctl enable --now nginx  |  systemctl restart sshd  |  systemctl status firewalld  |  systemctl is-active httpd",
+            tip: "enable --now does both enable+start in one command. Know the difference: start=now, enable=at boot", interview: true, tags: ["systemctl", "services", "systemd"]
+          },
+          {
+            cmd: "systemctl list-units  |  systemctl list-unit-files  |  systemctl daemon-reload", desc: "List active units, all unit files, reload after unit file changes. daemon-reload required after editing .service files",
+            ex: "systemctl list-units --type=service --state=failed  |  systemctl list-unit-files | grep enabled",
+            tip: "After editing a .service file, MUST run daemon-reload then restart — top exam gotcha", interview: true, tags: ["systemctl", "systemd"]
+          },
+          {
+            cmd: "systemctl get-default  |  systemctl set-default multi-user.target  |  systemctl isolate rescue.target", desc: "System targets (runlevels): graphical.target=5, multi-user.target=3, rescue.target=1, emergency.target",
+            ex: "systemctl set-default multi-user.target  |  systemctl isolate graphical.target",
+            tip: "Targets replace runlevels: 0=poweroff, 1=rescue, 3=multi-user, 5=graphical, 6=reboot", interview: true, tags: ["targets", "boot", "systemd"]
+          },
+          {
+            cmd: "systemctl reboot  |  systemctl poweroff  |  systemctl halt  |  shutdown -r +5 'msg'", desc: "Shutdown/reboot commands. shutdown -r now, shutdown -h now, -r +5 in 5 minutes",
+            ex: "shutdown -r +10 'Rebooting for kernel update'  |  systemctl reboot", tags: ["shutdown", "reboot", "power"]
+          },
+          {
+            cmd: "ps aux  |  ps -ef  |  ps aux | grep nginx  |  pgrep -la nginx", desc: "Process status. aux=all users+no tty+full info. -ef=every process full format. pgrep searches by name",
+            ex: "ps aux --sort=-%mem | head -10  |  ps aux --sort=-%cpu | head -5  |  ps -eo pid,ppid,cmd,%cpu,%mem",
+            tip: "ps aux | awk '{print $1}' for usernames. Know PID, PPID, STATE fields: S=sleep, R=run, Z=zombie, D=uninterruptible", interview: true, tags: ["ps", "processes"]
+          },
+          {
+            cmd: "top  |  htop  |  top -b -n1 | head -20  |  top -p PID1,PID2", desc: "Interactive process monitor. b=batch mode (scriptable). -n1=one iteration only. -p=filter by PID",
+            ex: "top -b -n1 -o %MEM | head -20  # top memory consumers in script", tags: ["top", "htop", "monitor"]
+          },
+          {
+            cmd: "kill PID  |  kill -9 PID  |  kill -15 PID  |  killall nginx  |  pkill -u user", desc: "Send signals. -15 SIGTERM (graceful stop), -9 SIGKILL (force), -1 SIGHUP (reload config)",
+            ex: "kill -9 $(pgrep -x nginx)  |  killall -15 httpd  |  pkill -u baduser  |  kill -HUP $(cat /var/run/nginx.pid)",
+            tip: "Always try SIGTERM (15) first, SIGKILL (9) as last resort. SIGKILL can't be caught/ignored. HUP often reloads config", interview: true, tags: ["kill", "signals", "processes"]
+          },
+          {
+            cmd: "nice -n 10 cmd  |  renice 5 -p PID  |  renice -n -5 -u user", desc: "Process priority. nice -20 to 19 (lower=higher priority). Only root can set negative nice values",
+            ex: "nice -n 15 find / -name '*.log'  |  renice 10 -p $(pgrep backup)  |  renice -n -10 -u oracle",
+            tip: "Priority = nice + 20 (shown in ps). Nice -20 = priority 0 (highest). Regular users can only increase nice value", interview: true, tags: ["nice", "priority", "scheduling"]
+          },
+          {
+            cmd: "jobs  |  bg %1  |  fg %1  |  Ctrl+Z  |  nohup cmd &  |  disown", desc: "Job control. Ctrl+Z suspends, bg sends to background, fg brings to foreground, nohup survives logout",
+            ex: "sleep 300 &  |  jobs  |  fg %1  |  nohup ./longscript.sh > out.log 2>&1 &  |  disown %1", tags: ["jobs", "background", "foreground"]
+          },
+          {
+            cmd: "journalctl -u service  |  journalctl -xe  |  journalctl --since '1 hour ago'  |  journalctl -f", desc: "systemd journal. -u=unit, -x=explanations, -e=end/jump to end, -f=follow, --since/--until time filters",
+            ex: "journalctl -u nginx --since today  |  journalctl -p err --since '2024-01-01'  |  journalctl --disk-usage",
+            tip: "journalctl -u service -f is like tail -f for systemd services. -p crit/err/warning filters by priority", interview: true, tags: ["journalctl", "logs", "systemd"]
+          },
+          {
+            cmd: "journalctl --vacuum-size=500M  |  journalctl --vacuum-time=30d", desc: "Manage journal size. Persistent journals configured in /etc/systemd/journald.conf",
+            ex: "mkdir -p /var/log/journal  # enables persistent journal\nsystemctl restart systemd-journald", tags: ["journalctl", "logs", "storage"]
+          },
+          {
+            cmd: "rsyslog  |  /etc/rsyslog.conf  |  /var/log/messages  |  /var/log/secure  |  /var/log/auth.log", desc: "Traditional syslog. Key log files: messages=general, secure=auth, cron=jobs, boot.log=boot",
+            ex: "tail -f /var/log/secure  # watch login attempts  |  grep 'Failed password' /var/log/secure | tail -20", tags: ["logs", "syslog", "rsyslog"]
+          },
+          {
+            cmd: "tuned-adm active  |  tuned-adm list  |  tuned-adm profile throughput-performance", desc: "Tuning profiles for performance. Profiles: throughput-performance, latency-performance, powersave, balanced",
+            ex: "tuned-adm profile throughput-performance  |  tuned-adm recommend",
+            tip: "tuned-adm recommend suggests the best profile. throughput-performance for servers, latency-performance for low-latency", interview: true, tags: ["tuned", "performance", "tuning"]
+          },
+          {
+            cmd: "scp file user@host:/path  |  scp -r dir/ user@host:/path  |  scp user@host:file .", desc: "Secure copy over SSH. -r recursive, -p preserve timestamps, -P port",
+            ex: "scp -r /var/www/ backup@192.168.1.50:/backups/  |  scp user@server:/etc/nginx.conf .",
+            tip: "scp is deprecated in newer OpenSSH, sftp/rsync preferred but still on exams", tags: ["scp", "transfer", "ssh"]
+          },
+          {
+            cmd: "rsync -avz src/ user@host:dst/  |  rsync --delete --progress", desc: "Efficient file sync. -a=archive, -v=verbose, -z=compress, --delete removes files not in src, -n=dry-run",
+            ex: "rsync -avz --delete /var/www/ backupserver:/var/www/  |  rsync -avzn /etc/ user@host:/backup/etc/  # dry run first",
+            tip: "rsync only transfers changes (delta). --delete is DANGEROUS without --dry-run first. Use -n to preview", interview: true, tags: ["rsync", "backup", "transfer"]
+          },
+        ]
+      },
+      {
+        id: "storage", icon: "&#128190;", color: "#39d353",
+        title: "Local Storage & LVM",
+        desc: "Partitions (MBR/GPT), Physical Volumes, Volume Groups, Logical Volumes, swap",
+        cmds: [
+          {
+            cmd: "lsblk  |  lsblk -f  |  blkid  |  fdisk -l", desc: "List block devices. -f shows filesystems/UUIDs. blkid shows UUIDs and types. fdisk -l lists partition tables",
+            ex: "lsblk -f  |  blkid /dev/sda1  |  fdisk -l /dev/sdb",
+            tip: "lsblk -f and blkid are the first tools for storage investigation. Know your /dev/sda vs /dev/nvme0n1 naming", interview: true, tags: ["disks", "lsblk", "blkid"]
+          },
+          {
+            cmd: "fdisk /dev/sdb  |  gdisk /dev/sdb  |  parted /dev/sdb", desc: "Partition tools. fdisk=MBR+GPT (interactive), gdisk=GPT only, parted=scriptable GPT/MBR",
+            ex: "fdisk /dev/sdb  # then: n=new, d=delete, p=print, w=write, q=quit\nparted /dev/sdb mklabel gpt\nparted /dev/sdb mkpart primary ext4 1MiB 10GiB",
+            tip: "MBR=fdisk, GPT=gdisk or parted. GPT needed for disks >2TB or UEFI. fdisk now supports GPT too", interview: true, tags: ["fdisk", "gdisk", "partitions", "mbr", "gpt"]
+          },
+          {
+            cmd: "pvcreate /dev/sdb1  |  pvdisplay  |  pvs  |  pvremove /dev/sdb1", desc: "Physical Volume management for LVM. Mark a partition/disk as LVM PV",
+            ex: "pvcreate /dev/sdb1 /dev/sdc1  |  pvs  |  pvdisplay /dev/sdb1",
+            tip: "LVM hierarchy: PV → VG → LV → Filesystem. Know this order for exam questions", interview: true, tags: ["lvm", "pv", "physical-volume"]
+          },
+          {
+            cmd: "vgcreate vgname /dev/sdb1  |  vgextend vgname /dev/sdc1  |  vgs  |  vgdisplay", desc: "Volume Group management. Group PVs together. vgextend adds more PVs",
+            ex: "vgcreate datavg /dev/sdb1 /dev/sdc1  |  vgextend datavg /dev/sdd1  |  vgs",
+            tip: "VG is the pool. LVs are carved from it. PE (Physical Extent) size is default 4MB — affects max LV size calculation", interview: true, tags: ["lvm", "vg", "volume-group"]
+          },
+          {
+            cmd: "lvcreate -L 10G -n lvname vgname  |  lvcreate -l 100%FREE -n lvname vgname", desc: "Create Logical Volume. -L size, -l extents or %FREE/%VG/%PVS, -n name",
+            ex: "lvcreate -L 20G -n data datavg  |  lvcreate -l 100%FREE -n backup datavg\nlvcreate -L 5G -n lv_home vg_system",
+            tip: "-L 10G exact size, -l 100%FREE uses all remaining. LV path: /dev/vgname/lvname or /dev/mapper/vgname-lvname", interview: true, tags: ["lvm", "lv", "logical-volume"]
+          },
+          {
+            cmd: "lvextend -L +5G /dev/vg/lv  |  lvextend -l +100%FREE /dev/vg/lv  |  lvreduce -L 2G /dev/vg/lv", desc: "Resize LVs. lvextend grows (safe), lvreduce shrinks (risky — must unmount ext4 first). resize2fs after",
+            ex: "lvextend -L +10G /dev/datavg/data && resize2fs /dev/datavg/data\nxfs_growfs /mountpoint  # XFS: must be mounted, use growfs not resize2fs",
+            tip: "XFS can only grow, not shrink. ext4 can shrink but must unmount first. resize2fs/xfs_growfs after lvextend", interview: true, tags: ["lvm", "extend", "resize"]
+          },
+          {
+            cmd: "lvs  |  lvdisplay  |  lvremove /dev/vg/lv  |  lvrename vg oldlv newlv", desc: "List, display, remove, rename logical volumes",
+            ex: "lvs -o name,size,vg_name  |  lvremove /dev/datavg/oldlv", tags: ["lvm", "lv"]
+          },
+          {
+            cmd: "mkswap /dev/sdb2  |  swapon /dev/sdb2  |  swapoff /dev/sdb2  |  swapon --show", desc: "Create and manage swap space. Can also use a file as swap",
+            ex: "dd if=/dev/zero of=/swapfile bs=1G count=2\nchmod 600 /swapfile && mkswap /swapfile && swapon /swapfile\necho '/swapfile swap swap defaults 0 0' >> /etc/fstab",
+            tip: "Swap priority: swapon -p 10 /dev/sdb2 gives higher priority. swapon --show shows all swap with priority", interview: true, tags: ["swap", "memory"]
+          },
+          {
+            cmd: "pvmove /dev/sdb1  |  vgreduce vgname /dev/sdb1  |  pvremove /dev/sdb1", desc: "Safely remove a PV from a VG by migrating data first",
+            ex: "pvmove /dev/sdb1  # move data to other PVs\nvgreduce datavg /dev/sdb1  # remove from VG\npvremove /dev/sdb1  # remove LVM label", tags: ["lvm", "pv", "remove"]
+          },
+        ]
+      },
+      {
+        id: "filesystems", icon: "&#128202;", color: "#56d364",
+        title: "File Systems & Mounting",
+        desc: "ext4, xfs, vfat, NFS, autofs, fstab, UUID mounts",
+        cmds: [
+          {
+            cmd: "mkfs.ext4 /dev/vg/lv  |  mkfs.xfs /dev/sdb1  |  mkfs.vfat -F32 /dev/sdc1", desc: "Format partitions/LVs with filesystem. ext4=Linux default, xfs=high-perf/RHEL default, vfat=USB/Windows compat",
+            ex: "mkfs.ext4 -L 'DataDisk' /dev/datavg/data\nmkfs.xfs -L 'AppData' /dev/sdb2\nmkfs.vfat -F 32 -n 'USBDRIVE' /dev/sdc1",
+            tip: "XFS is RHEL 7+ default. Can't shrink XFS. ext4 supports shrink but needs fsck first. RHCSA exam often tests XFS", interview: true, tags: ["mkfs", "ext4", "xfs", "vfat", "format"]
+          },
+          {
+            cmd: "mount /dev/sdb1 /mnt/data  |  mount -t xfs /dev/sdb1 /mnt  |  mount -o ro /dev/sdb1 /mnt", desc: "Mount filesystems. -t type, -o options (ro=read-only, noexec, nosuid, remount)",
+            ex: "mount -o remount,rw /  |  mount /dev/sdb1 /data  |  mount | grep sdb", tags: ["mount", "filesystems"]
+          },
+          {
+            cmd: "umount /mnt/data  |  umount -l /mnt  |  fuser -mv /mnt/data  |  lsof /mnt", desc: "Unmount. -l lazy unmount (when busy). fuser/lsof shows what's using the mount",
+            ex: "fuser -mv /mnt/usb  # find who's using it\nkill $(fuser -m /mnt/data)\numount /mnt/data", tags: ["umount", "mount"]
+          },
+          {
+            cmd: "/etc/fstab  |  UUID=xxx /mount ext4 defaults 0 2", desc: "Persistent mount config. Format: device mountpoint type options dump fsck-order. Use UUID not /dev/sdX",
+            ex: "# /etc/fstab entries:\nUUID=$(blkid -s UUID -o value /dev/sdb1)\necho \"UUID=$UUID /data xfs defaults 0 2\" >> /etc/fstab\nmount -a  # test fstab without reboot",
+            tip: "ALWAYS use UUID in /etc/fstab, never /dev/sdX (device names can change on reboot). mount -a tests all fstab entries", interview: true, tags: ["fstab", "uuid", "mount", "persistent"]
+          },
+          {
+            cmd: "blkid -s UUID -o value /dev/sdb1  |  ls -la /dev/disk/by-uuid/  |  lsblk -o NAME,UUID", desc: "Get UUID for fstab. /dev/disk/by-uuid/ symlinks are persistent across reboots",
+            ex: "blkid  # shows all devices with UUID\nls /dev/disk/by-uuid/  |  lsblk -f", tags: ["uuid", "blkid", "fstab"]
+          },
+          {
+            cmd: "mount -t nfs server:/share /mnt/nfs  |  showmount -e server", desc: "Mount NFS network filesystem. showmount lists server's exports",
+            ex: "showmount -e fileserver  |  mount -t nfs4 fileserver:/data /mnt/data\necho 'fileserver:/data /mnt/data nfs defaults,_netdev 0 0' >> /etc/fstab",
+            tip: "_netdev option in fstab tells system to wait for network before mounting — essential for NFS fstab entries", interview: true, tags: ["nfs", "network", "mount"]
+          },
+          {
+            cmd: "autofs  |  /etc/auto.master  |  /etc/auto.misc  |  systemctl enable --now autofs", desc: "Auto-mount filesystems on-demand, unmount after idle. Configured in /etc/auto.master and map files",
+            ex: "# /etc/auto.master:\n/mnt/nfs  /etc/auto.nfs\n# /etc/auto.nfs:\ndata  -rw,soft  fileserver:/data\n# Access /mnt/nfs/data to trigger mount",
+            tip: "autofs mounts only when accessed, unmounts after timeout. Saves resources vs permanent NFS mounts. Common exam topic", interview: true, tags: ["autofs", "nfs", "automount"]
+          },
+          {
+            cmd: "e2label /dev/sdb1 'DataLabel'  |  xfs_admin -L 'XFSLabel' /dev/sdb1  |  tune2fs -L 'label' /dev/sdb1", desc: "Set filesystem labels for fstab LABEL= entries",
+            ex: "e2label /dev/sdb1 mydata\nmount LABEL=mydata /mnt/data\necho 'LABEL=mydata /data ext4 defaults 0 2' >> /etc/fstab", tags: ["label", "fstab", "mount"]
+          },
+          {
+            cmd: "fsck /dev/sdb1  |  e2fsck -f /dev/sdb1  |  xfs_repair /dev/sdb1", desc: "Filesystem check and repair. MUST be unmounted first. -f forces check even if marked clean",
+            ex: "umount /dev/sdb1 && fsck -y /dev/sdb1  |  xfs_repair /dev/sdb1",
+            tip: "XFS: use xfs_repair not fsck. ext4: e2fsck or fsck.ext4. Run only on unmounted filesystems", interview: true, tags: ["fsck", "repair", "filesystem"]
+          },
+          {
+            cmd: "resize2fs /dev/vg/lv  |  xfs_growfs /mountpoint  |  resize2fs /dev/vg/lv 15G", desc: "Resize filesystem after LV resize. resize2fs for ext4, xfs_growfs for XFS (must be mounted)",
+            ex: "lvextend -L +5G /dev/vg/data && resize2fs /dev/vg/data\nlvextend -l +100%FREE /dev/vg/xfsdata && xfs_growfs /data",
+            tip: "Two-step: 1) lvextend (LV size) then 2) resize filesystem. Or use lvextend -r to do both at once", interview: true, tags: ["resize", "ext4", "xfs", "lvm"]
+          },
+          {
+            cmd: "setgid dir for collaboration: chmod g+s /shared  |  chgrp devs /shared", desc: "Set-GID on directory makes new files inherit directory's group. Essential for team collaboration",
+            ex: "mkdir /project && chgrp developers /project && chmod 2775 /project\n# 2775 = setgid + rwxrwxr-x\n# New files created here get group 'developers'",
+            tip: "SGID (2) on dir + rwxrwsr-x is the standard setup for collaborative directories. New files auto-get correct group", interview: true, tags: ["sgid", "collaboration", "permissions"]
+          },
+        ]
+      },
+      {
+        id: "maintenance", icon: "&#128347;", color: "#d29922",
+        title: "System Maintenance & Boot",
+        desc: "Cron, at, services, bootloader, time, software updates",
+        cmds: [
+          {
+            cmd: "crontab -e  |  crontab -l  |  crontab -r  |  crontab -u user -e", desc: "Edit/list/remove cron jobs. Format: min hour dom month dow command",
+            ex: "# m h dom mon dow   command\n0 2 * * *   /usr/local/bin/backup.sh\n*/5 * * * * /usr/local/bin/check.sh  # every 5 min\n0 */4 * * 1-5 /usr/bin/report.sh  # every 4h, Mon-Fri",
+            tip: "Cron fields: m h dom mon dow. * means any. */5 means every 5. 1-5 range. Common mistake: forgetting full path to commands", interview: true, tags: ["cron", "schedule", "crontab"]
+          },
+          {
+            cmd: "/etc/cron.d/  |  /etc/cron.daily/  |  /etc/cron.hourly/  |  /etc/crontab", desc: "System-wide cron locations. cron.daily/hourly/weekly/monthly run scripts in those dirs automatically",
+            ex: "# /etc/cron.d/myapp:\n0 3 * * * root /opt/myapp/cleanup.sh >> /var/log/myapp.log 2>&1\n# /etc/cron.daily/: drop executable script here, runs daily", tags: ["cron", "system", "schedule"]
+          },
+          {
+            cmd: "at 2:30pm tomorrow  |  at now + 2 hours  |  atq  |  atrm jobnumber", desc: "Schedule one-time tasks. atq lists pending jobs. atrm removes them. at reads commands from stdin",
+            ex: "echo 'systemctl restart nginx' | at 3am tomorrow\nat 14:00 < maintenance.sh\natq  # list pending\natrm 3  # cancel job 3",
+            tip: "at is for one-time tasks, cron for recurring. at uses /var/spool/at/. /etc/at.allow and at.deny control access", interview: true, tags: ["at", "schedule", "one-time"]
+          },
+          {
+            cmd: "timedatectl  |  timedatectl set-timezone Asia/Kolkata  |  timedatectl set-ntp true", desc: "Time and timezone management. set-ntp enables chrony/ntpd sync",
+            ex: "timedatectl set-timezone Asia/Kolkata  |  timedatectl list-timezones | grep India  |  timedatectl status",
+            tip: "timedatectl replaces date/hwclock. Always set NTP in production. chrony is default NTP in RHEL 7+", interview: true, tags: ["time", "timezone", "ntp", "timedatectl"]
+          },
+          {
+            cmd: "chronyc tracking  |  chronyc sources  |  /etc/chrony.conf  |  systemctl enable chronyd", desc: "Chrony NTP client/server. tracking shows sync status. sources shows time servers",
+            ex: "chronyc tracking  |  chronyc makestep  # force immediate sync\n# /etc/chrony.conf: add 'server pool.ntp.org iburst'", tags: ["chrony", "ntp", "time"]
+          },
+          {
+            cmd: "grub2-mkconfig -o /boot/grub2/grub.cfg  |  grubby --default-kernel  |  grubby --set-default", desc: "GRUB2 bootloader config. grubby manages kernel entries. grub.cfg is auto-generated — edit /etc/default/grub",
+            ex: "grub2-mkconfig -o /boot/grub2/grub.cfg  |  grubby --default-kernel\ngrubby --update-kernel=ALL --args='quiet splash'  |  grubby --remove-args='quiet'",
+            tip: "/etc/default/grub sets GRUB settings. NEVER edit grub.cfg directly — regenerate with grub2-mkconfig", interview: true, tags: ["grub", "bootloader", "kernel"]
+          },
+          {
+            cmd: "Interrupt boot → edit kernel line → rd.break or init=/bin/bash → passwd → restorecon", desc: "Reset root password by interrupting GRUB, entering rd.break (initramfs shell)",
+            ex: "# At GRUB: press 'e', find linux line, append: rd.break\n# In initramfs shell:\nmount -o remount,rw /sysroot\nchroot /sysroot\npasswd root\ntouch /.autorelabel  # fix SELinux contexts\nexit; exit",
+            tip: "rd.break is the RHCSA classic question. Must touch /.autorelabel or SELinux will block login after password reset", interview: true, tags: ["boot", "password-reset", "grub", "rd.break"]
+          },
+          {
+            cmd: "dnf history  |  dnf history undo N  |  dnf history info N  |  dnf autoremove", desc: "DNF transaction history and rollback. undo reverses a specific transaction",
+            ex: "dnf history  |  dnf history info 5  |  dnf history undo 10  |  dnf autoremove", tags: ["dnf", "history", "rollback"]
+          },
+          {
+            cmd: "systemd-analyze  |  systemd-analyze blame  |  systemd-analyze critical-chain", desc: "Boot time analysis. blame shows slowest services. critical-chain shows boot dependency chain",
+            ex: "systemd-analyze  |  systemd-analyze blame | head -10  |  systemd-analyze critical-chain", tags: ["boot", "performance", "systemd-analyze"]
+          },
+        ]
+      },
+      {
+        id: "networking", icon: "&#127760;", color: "#58a6ff",
+        title: "Network Configuration",
+        desc: "IP addressing, hostname, DNS, firewall, routing, NetworkManager",
+        cmds: [
+          {
+            cmd: "ip addr  |  ip addr show eth0  |  ip addr add 192.168.1.10/24 dev eth0  |  ip link set eth0 up", desc: "Show/manage IP addresses. ip replaces ifconfig. -4/-6 for IPv4/IPv6 only",
+            ex: "ip addr  |  ip -4 addr  |  ip -6 addr  |  ip addr add 10.0.0.1/24 dev eth0\nip link set eth0 up  |  ip addr del 192.168.1.10/24 dev eth0",
+            tip: "ip addr/link/route is the modern way. ifconfig is deprecated. Know ip addr show, ip route, ip neigh", interview: true, tags: ["ip", "networking", "address"]
+          },
+          {
+            cmd: "ip route  |  ip route add default via 192.168.1.1  |  ip route add 10.0.0.0/8 via 192.168.1.254", desc: "View/manage routing table. add routes, delete routes, show route for specific destination",
+            ex: "ip route  |  ip route add default via 192.168.1.1 dev eth0  |  ip route get 8.8.8.8",
+            tip: "ip route get 8.8.8.8 shows which interface/gateway would be used to reach that IP — useful for routing debugging", interview: true, tags: ["ip", "route", "networking"]
+          },
+          {
+            cmd: "nmcli  |  nmcli con show  |  nmcli dev status  |  nmtui", desc: "NetworkManager CLI and TUI. nmcli for scripts, nmtui for interactive. All changes are persistent",
+            ex: "nmcli con show  |  nmcli dev status  |  nmcli con mod 'eth0' ipv4.addresses '192.168.1.50/24' ipv4.gateway '192.168.1.1'  |  nmcli con up eth0",
+            tip: "nmcli con mod then con up/down applies changes. Configs saved to /etc/NetworkManager/system-connections/", interview: true, tags: ["nmcli", "networkmanager", "networking"]
+          },
+          {
+            cmd: "nmcli con add type ethernet ifname eth0 con-name myconn ip4 192.168.1.10/24 gw4 192.168.1.1", desc: "Create a new NetworkManager connection profile with static IP",
+            ex: "nmcli con add type ethernet con-name 'static-eth0' ifname eth0 ip4 10.0.1.100/24 gw4 10.0.1.1\nnmcli con mod 'static-eth0' ipv4.dns '8.8.8.8 8.8.4.4'\nnmcli con up 'static-eth0'",
+            tip: "Full workflow: add connection, mod DNS, then up it. Persistent across reboots automatically", interview: true, tags: ["nmcli", "static-ip", "networking"]
+          },
+          {
+            cmd: "hostnamectl set-hostname server.example.com  |  hostnamectl  |  /etc/hostname", desc: "Set system hostname. Permanent change. Three types: static, transient, pretty",
+            ex: "hostnamectl set-hostname webserver01.prod.example.com  |  hostnamectl status", tags: ["hostname", "hostnamectl"]
+          },
+          {
+            cmd: "/etc/hosts  |  /etc/resolv.conf  |  /etc/nsswitch.conf  |  nmcli con mod eth0 ipv4.dns '8.8.8.8'", desc: "DNS resolution. /etc/hosts for static entries. resolv.conf has nameservers (managed by NM). nsswitch controls lookup order",
+            ex: "echo '192.168.1.50 dbserver.local dbserver' >> /etc/hosts\nnmcli con mod 'eth0' ipv4.dns '8.8.8.8 1.1.1.1'\nnmcli con up eth0",
+            tip: "nsswitch.conf 'hosts: files dns' means check /etc/hosts FIRST, then DNS. Order matters for resolution", interview: true, tags: ["dns", "resolv", "hosts", "nsswitch"]
+          },
+          {
+            cmd: "ss -tulnp  |  ss -an | grep :80  |  netstat -tulnp  |  ss -s", desc: "Socket statistics (replaces netstat). -t=tcp, -u=udp, -l=listening, -n=numeric, -p=process",
+            ex: "ss -tulnp | grep :22  |  ss -an | grep ESTABLISHED | wc -l  |  ss -s  # summary",
+            tip: "ss is faster than netstat. -tulnp is the go-to for 'what's listening on what port'. Verify services after starting them", interview: true, tags: ["ss", "netstat", "ports", "sockets"]
+          },
+          {
+            cmd: "ping -c4 host  |  traceroute host  |  mtr host  |  curl -I https://site  |  wget -q -O- url", desc: "Network diagnostics. mtr combines ping+traceroute. curl -I HEAD request only",
+            ex: "ping -c4 -i0.2 8.8.8.8  |  traceroute -n 8.8.8.8  |  mtr --report 8.8.8.8  |  curl -v https://example.com", tags: ["ping", "traceroute", "curl", "network-debug"]
+          },
+          {
+            cmd: "nmap -sV host  |  nmap -p 1-1024 host  |  nmap --open -p 22,80,443 192.168.1.0/24", desc: "Network scanning. -sV version detection, -p ports, --open show only open. Use responsibly",
+            ex: "nmap -sV localhost  |  nmap -p 22,80,443 192.168.1.0/24 --open", tags: ["nmap", "scan", "security"]
+          },
+        ]
+      },
+      {
+        id: "usersgroups", icon: "&#128100;", color: "#bc8cff",
+        title: "Users & Groups",
+        desc: "Create/manage local users and groups, passwords, sudo, PAM",
+        cmds: [
+          {
+            cmd: "useradd -m -s /bin/bash -G wheel,developers username", desc: "Create user. -m=create home, -s=shell, -G=supplementary groups, -u=UID, -d=home dir, -c=comment",
+            ex: "useradd -m -s /bin/bash -G sudo,developers -u 1050 -c 'Dev User' alice\nuseradd -r -s /sbin/nologin -M appuser  # system user, no home",
+            tip: "-r for system accounts (UID <1000). -s /sbin/nologin prevents login. -M skips home dir creation", interview: true, tags: ["useradd", "users", "create"]
+          },
+          {
+            cmd: "usermod -aG group user  |  usermod -s /bin/bash user  |  usermod -L user  |  usermod -U user", desc: "Modify user. -aG append to group, -s change shell, -L lock account, -U unlock, -d change home",
+            ex: "usermod -aG docker,wheel alice  |  usermod -s /sbin/nologin olduser  |  usermod -L baduser",
+            tip: "-aG vs -G: -aG APPENDS groups, -G REPLACES all supplementary groups. Forgetting -a is a common mistake", interview: true, tags: ["usermod", "users", "modify"]
+          },
+          {
+            cmd: "userdel -r username  |  userdel username  # keep home", desc: "-r removes home dir and mail spool. Without -r, home dir stays",
+            ex: "userdel -r alice  |  find / -user alice 2>/dev/null  # orphaned files after deletion", tags: ["userdel", "users", "delete"]
+          },
+          {
+            cmd: "passwd username  |  passwd -l user  |  passwd -u user  |  passwd -e user  |  passwd -S user", desc: "Manage passwords. -l lock, -u unlock, -e expire (force change next login), -S status",
+            ex: "passwd alice  |  passwd -e alice  # must change on next login  |  passwd -S alice  |  passwd -l baduser",
+            tip: "passwd -e forces password change at next login — good for new users. -S shows password status (P=set, L=locked, NP=none)", interview: true, tags: ["passwd", "password", "users"]
+          },
+          {
+            cmd: "chage -l user  |  chage -M 90 user  |  chage -E 2025-12-31 user  |  chage -d 0 user", desc: "Password aging. -l list info, -M max days, -m min days, -W warn days, -E expiry date, -d last changed",
+            ex: "chage -l alice  |  chage -M 90 -m 1 -W 7 alice  |  chage -E 2025-06-30 alice  |  chage -d 0 alice  # force change",
+            tip: "chage -d 0 is same as passwd -e. -E sets account expiry date (not password). Know -M, -m, -W for aging policy questions", interview: true, tags: ["chage", "password", "aging", "expiry"]
+          },
+          {
+            cmd: "groupadd groupname  |  groupmod -n newname oldname  |  groupdel groupname  |  groups user", desc: "Create/modify/delete groups. groups shows user's group memberships",
+            ex: "groupadd -g 1500 developers  |  groupmod -n devops developers  |  groups alice  |  id alice", tags: ["groupadd", "groupmod", "groups"]
+          },
+          {
+            cmd: "visudo  |  /etc/sudoers  |  /etc/sudoers.d/  |  sudo -l", desc: "Configure sudo access. visudo validates syntax. Drop files in /etc/sudoers.d/ for modular config",
+            ex: "# /etc/sudoers entries:\nalice ALL=(ALL) ALL  # full sudo\nbob ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart nginx\n%wheel ALL=(ALL) ALL  # wheel group",
+            tip: "ALWAYS use visudo, never edit /etc/sudoers directly (syntax error = locked out). NOPASSWD: for automation accounts", interview: true, tags: ["sudo", "sudoers", "visudo", "privileges"]
+          },
+          {
+            cmd: "/etc/passwd  |  /etc/shadow  |  /etc/group  |  /etc/gshadow", desc: "Key user/group files. passwd: user info. shadow: hashed passwords. group: group info",
+            ex: "# /etc/passwd format: username:x:UID:GID:comment:home:shell\ngrep '^alice' /etc/passwd\nawk -F: '$3>=1000{print $1,$3}' /etc/passwd  # regular users",
+            tip: "shadow file fields: user:hash:lastchg:min:max:warn:inactive:expire. $6$=SHA-512, $1$=MD5 (insecure)", interview: true, tags: ["passwd", "shadow", "users", "files"]
+          },
+          {
+            cmd: "getent passwd user  |  getent group groupname  |  getent hosts hostname", desc: "Query system databases (works with LDAP/NIS too, not just local files)",
+            ex: "getent passwd alice  |  getent group developers  |  getent passwd | awk -F: '$3>=1000'", tags: ["getent", "users", "directory"]
+          },
+        ]
+      },
+      {
+        id: "security", icon: "&#128737;&#65039;", color: "#f85149",
+        title: "Security: SELinux & Firewall",
+        desc: "SELinux modes, contexts, booleans, ports, firewalld rules",
+        cmds: [
+          {
+            cmd: "getenforce  |  setenforce 0  |  setenforce 1  |  /etc/selinux/config", desc: "Get/set SELinux mode. 0=Permissive (log only), 1=Enforcing (block+log). Persistent change in /etc/selinux/config",
+            ex: "getenforce  |  setenforce 0  # temporary permissive (testing)\n# /etc/selinux/config: set SELINUX=enforcing for permanent",
+            tip: "setenforce is temporary (lost on reboot). /etc/selinux/config is permanent. NEVER set SELINUX=disabled without clear reason", interview: true, tags: ["selinux", "enforcing", "permissive"]
+          },
+          {
+            cmd: "ls -Z file  |  ps -Z  |  id -Z  |  ls -Zd /var/www/html", desc: "Show SELinux security context. Format: user:role:type:level. The 'type' is most important for file access",
+            ex: "ls -Z /etc/passwd  |  ps -Z | grep httpd  |  ls -Zd /var/www/html  |  id -Z",
+            tip: "SELinux context type matters most: httpd_t (process) needs httpd_sys_content_t (files). Type mismatch = denial", interview: true, tags: ["selinux", "context", "ls -Z"]
+          },
+          {
+            cmd: "chcon -t httpd_sys_content_t /var/www/myapp/  |  chcon -R -t type dir/", desc: "Change SELinux context temporarily. Reverted by restorecon or relabeling. Good for testing",
+            ex: "chcon -R -t httpd_sys_content_t /srv/webapp/  |  chcon --reference=/var/www/html /new/dir/", tags: ["selinux", "chcon", "context"]
+          },
+          {
+            cmd: "semanage fcontext -a -t httpd_sys_content_t '/srv/webapp(/.*)?'  |  restorecon -Rv /srv/webapp/", desc: "PERMANENT context change. semanage sets policy, restorecon applies it. Use this, not chcon, for persistence",
+            ex: "semanage fcontext -a -t httpd_sys_content_t '/opt/myapp(/.*)?'\nrestorecon -Rv /opt/myapp/\n# Verify:\nls -Z /opt/myapp/",
+            tip: "The workflow: semanage fcontext -a (add policy) THEN restorecon (apply). This survives relabeling. Most important SELinux skill", interview: true, tags: ["selinux", "semanage", "restorecon", "context"]
+          },
+          {
+            cmd: "restorecon -Rv /path/  |  touch /.autorelabel  |  fixfiles relabel /", desc: "Restore default SELinux contexts. -R recursive, -v verbose. /.autorelabel triggers full relabel on next boot",
+            ex: "restorecon -Rv /etc/ssh/  |  restorecon -Rv /home/user/.ssh/",
+            tip: "After moving files (mv), always run restorecon. cp preserves context but mv changes it to parent dir context", interview: true, tags: ["selinux", "restorecon", "relabel"]
+          },
+          {
+            cmd: "getsebool -a  |  getsebool httpd_can_network_connect  |  setsebool -P httpd_can_network_connect on", desc: "SELinux booleans toggle specific behaviors. -P makes change persistent across reboots",
+            ex: "getsebool -a | grep httpd  |  setsebool -P httpd_enable_homedirs on  |  setsebool -P httpd_can_network_connect_db on",
+            tip: "-P = persistent. Without -P, reset after reboot. For web apps: httpd_can_network_connect, httpd_use_nfs, httpd_enable_homedirs are common", interview: true, tags: ["selinux", "booleans", "setsebool"]
+          },
+          {
+            cmd: "semanage port -l  |  semanage port -l | grep http  |  semanage port -a -t http_port_t -p tcp 8080", desc: "SELinux port labels. Services need ports labeled with correct type. -a add, -m modify, -d delete",
+            ex: "semanage port -a -t http_port_t -p tcp 8888  # allow nginx on port 8888\nsemanage port -l | grep ssh  |  semanage port -m -t ssh_port_t -p tcp 2222",
+            tip: "If service fails on non-standard port, SELinux port label is likely the cause. semanage port -a fixes it", interview: true, tags: ["selinux", "ports", "semanage"]
+          },
+          {
+            cmd: "ausearch -m avc -ts recent  |  ausearch -m avc -c httpd  |  audit2allow -M mymodule < audit.log", desc: "Search audit log for SELinux denials. audit2allow generates policy to allow denied actions",
+            ex: "ausearch -m avc --start today | audit2why  |  ausearch -m avc -ts recent | audit2allow -M custom  |  semodule -i custom.pp",
+            tip: "Workflow for SELinux troubleshooting: check ausearch → understand denial → fix with proper label/boolean/port vs audit2allow (last resort)", interview: true, tags: ["selinux", "audit", "ausearch", "troubleshoot"]
+          },
+          {
+            cmd: "firewall-cmd --state  |  firewall-cmd --get-active-zones  |  firewall-cmd --list-all", desc: "Firewalld status. Zones define trust levels. --list-all shows all rules for active zone",
+            ex: "firewall-cmd --state  |  firewall-cmd --get-active-zones  |  firewall-cmd --zone=public --list-all",
+            tip: "firewalld uses zones. Default zones: public (external), internal, trusted, dmz. Interface assigned to a zone", interview: true, tags: ["firewall", "firewalld", "zones"]
+          },
+          {
+            cmd: "firewall-cmd --add-service=http --permanent  |  firewall-cmd --add-port=8080/tcp --permanent  |  firewall-cmd --reload", desc: "Add firewall rules permanently. --permanent saves rule; must --reload to apply. Without --permanent: lost on reload",
+            ex: "firewall-cmd --permanent --add-service=https  |  firewall-cmd --permanent --add-port=3306/tcp  |  firewall-cmd --reload\nfirewall-cmd --permanent --zone=internal --add-source=192.168.1.0/24",
+            tip: "Two-step: add with --permanent AND --reload. Or use both: --permanent --add-service=x then --reload. No permanent = temp rule only", interview: true, tags: ["firewall", "firewalld", "rules", "permanent"]
+          },
+          {
+            cmd: "firewall-cmd --remove-service=http --permanent  |  firewall-cmd --zone=public --add-rich-rule='rule...'", desc: "Remove services, add rich rules for complex firewall logic",
+            ex: "firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=192.168.1.100 service name=ssh accept'\nfirewall-cmd --permanent --remove-port=8080/tcp  |  firewall-cmd --reload", tags: ["firewall", "firewalld", "rich-rules"]
+          },
+          {
+            cmd: "firewall-cmd --permanent --add-masquerade  |  firewall-cmd --permanent --add-forward-port", desc: "NAT/masquerade and port forwarding with firewalld",
+            ex: "firewall-cmd --permanent --zone=public --add-masquerade\nfirewall-cmd --permanent --add-forward-port=port=80:proto=tcp:toport=8080  |  firewall-cmd --reload", tags: ["firewall", "nat", "masquerade"]
+          },
+        ]
+      },
+    ];
+
+    let activeSection = 'all';
+    let searchTerm = '';
+
+    function buildNav() {
+      const tabs = document.getElementById('navTabs');
+      const sidebar = document.getElementById('sidebar');
+
+      const allCount = data.reduce((s, sec) => s + sec.cmds.length, 0);
+
+      tabs.innerHTML = `<button class="tab-btn active" onclick="filterSection('all', this)">All <span class="tab-count">${allCount}</span></button>` +
+        data.map(s => `<button class="tab-btn" onclick="filterSection('${s.id}', this)">${s.title.split(' ')[0]} <span class="tab-count">${s.cmds.length}</span></button>`).join('');
+
+      sidebar.innerHTML = `<div class="sidebar-section">
+    ${data.map(s => `<a class="sidebar-item" href="#section-${s.id}" onclick="smoothNav(event, '${s.id}')">
+      <div class="sidebar-dot" style="background:${s.color}"></div>${s.title}
+    </a>`).join('')}
+  </div>`;
+    }
+
+    function smoothNav(e, id) {
+      e.preventDefault();
+      document.getElementById('section-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function buildSections() {
+      const container = document.getElementById('sections');
+      container.innerHTML = data.map(sec => `
+    <div class="section-block" id="section-${sec.id}" data-section="${sec.id}">
+      <div class="section-header">
+        <span class="section-icon">${sec.icon}</span>
+        <div>
+          <div class="section-title">${sec.title}</div>
+          <div class="section-desc">${sec.desc}</div>
+        </div>
+        <div class="section-badge" style="color:${sec.color};border-color:${sec.color}33">${sec.cmds.length} commands</div>
+      </div>
+      <div class="cmd-grid">
+        ${sec.cmds.map((c, i) => buildCard(c, i)).join('')}
+      </div>
+    </div>
+  `).join('');
+      updateCount();
+    }
+
+    function buildCard(c, i) {
+      return `<div class="cmd-card" data-search="${(c.cmd + ' ' + c.desc + ' ' + (c.ex || '') + ' ' + (c.tags || []).join(' ')).toLowerCase()}">
+    <div class="cmd-top">
+      <div class="cmd-code" onclick="copyCmd(this, \`${c.cmd.replace(/`/g, '\\`')}\`)" title="Click to copy">
+        <span class="copy-hint">copy</span>
+        <code>${escHtml(c.cmd)}</code>
+      </div>
+      ${c.interview ? '<span class="interview-flag">&#9733; EXAM</span>' : ''}
+    </div>
+    <div class="cmd-desc" style="margin-top:.4rem">${escHtml(c.desc)}</div>
+    ${c.ex ? `<div class="cmd-example-label">Real-world example</div><div class="cmd-example">${escHtml(c.ex)}</div>` : ''}
+    ${c.tip ? `<div class="cmd-tip"><span class="cmd-tip-icon">&#9432;</span><span>${escHtml(c.tip)}</span></div>` : ''}
+    ${c.tags ? `<div class="tags">${c.tags.map(t => `<span class="tag">${t}</span>`).join('')}</div>` : ''}
+  </div>`;
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>');
+    }
+
+    function copyCmd(el, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        el.classList.add('copied');
+        const orig = el.querySelector('code').textContent;
+        el.querySelector('code').textContent = 'Copied!';
+        setTimeout(() => { el.classList.remove('copied'); el.querySelector('code').innerHTML = escHtml(text); }, 1500);
+      }).catch(() => {
+        const ta = document.createElement('textarea');
+        ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+      });
+    }
+
+    function filterSection(id, btn) {
+      activeSection = id;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.section-block').forEach(s => {
+        s.style.display = (id === 'all' || s.dataset.section === id) ? '' : 'none';
+      });
+      applySearch();
+    }
+
+    function applySearch() {
+      const term = searchTerm.toLowerCase();
+      let visible = 0;
+      document.querySelectorAll('.cmd-card').forEach(card => {
+        const sectionHidden = card.closest('.section-block').style.display === 'none';
+        const matches = !term || card.dataset.search.includes(term);
+        card.classList.toggle('hidden', !matches || sectionHidden);
+        if (matches && !sectionHidden) visible++;
+      });
+
+      document.querySelectorAll('.section-block').forEach(sec => {
+        if (sec.style.display === 'none') return;
+        const hasVisible = [...sec.querySelectorAll('.cmd-card')].some(c => !c.classList.contains('hidden'));
+        if (term) sec.style.opacity = hasVisible ? '1' : '0.3';
+        else sec.style.opacity = '1';
+      });
+
+      updateCount(visible);
+    }
+
+    function updateCount(n) {
+      const total = data.reduce((s, sec) => s + sec.cmds.length, 0);
+      const count = n !== undefined ? n : total;
+      document.getElementById('searchCount').textContent = searchTerm ? `Showing ${count} matching commands` : '';
+    }
+
+    document.getElementById('searchInput').addEventListener('input', function () {
+      searchTerm = this.value;
+      applySearch();
+    });
+
+    buildNav();
+    buildSections();
+  </script>
+</body>
+
+</html>
