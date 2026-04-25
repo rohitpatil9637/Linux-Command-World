@@ -36,13 +36,13 @@
 git clone https://github.com/rohitpatil9637/Linux-Command-World.git
 
 # Open in your browser
-open linux-guide.html        # macOS
-xdg-open linux-guide.html    # Linux
-start linux-guide.html       # Windows
+open index.html        # macOS
+xdg-open index.html    # Linux
+start index.html       # Windows
 ```
 
 ### Option 2: Just open it
-Simply **double-click** `linux-guide.html` — it runs entirely in your browser with zero setup.
+Simply **double-click** `index.html` — it runs entirely in your browser with zero setup.
 
 
 
@@ -51,7 +51,7 @@ Simply **double-click** `linux-guide.html` — it runs entirely in your browser 
 
 ```
 .
-├── linux-guide.html    # Complete application (single file)
+├── index.html    # Complete application (single file)
 └── README.md           # This file
 ```
 
@@ -61,7 +61,7 @@ Simply **double-click** `linux-guide.html` — it runs entirely in your browser 
 
 Contributions are welcome! To add a new command:
 
-1. Open `linux-guide.html`
+1. Open `index.html`
 2. Find the appropriate section in the `data` array (line ~607)
 3. Add a new object to the `cmds` array:
 
